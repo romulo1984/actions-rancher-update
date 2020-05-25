@@ -55,21 +55,19 @@ async function main() {
   launchConfig.imageUuid = `docker:${DOCKER_IMAGE}`;
   launchConfig.startFirst = true;
 
-  console.log(JSON.stringify(launchConfig))
-
+  const secondaryLaunchConfigs = null;
   if (SIDEKICK_DOCKER_IMAGE) {
-    launchConfig.secondaryLaunchConfigs = [
-      {
-        ...launchConfig,
-        imageUuid: `docker:${SIDEKICK_DOCKER_IMAGE}`
-      }
-    ]
+    secondaryLaunchConfigs = {
+      ...launchConfig,
+      imageUuid: `docker:${SIDEKICK_DOCKER_IMAGE}`
+    }
   }
 
   // Upgrade
   const body = {
     inServiceStrategy: {
-      launchConfig
+      launchConfig,
+      secondaryLaunchConfigs
     }
   };
   await rancherApi.post(`/service/${id}?action=upgrade`, { body });
