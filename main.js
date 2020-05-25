@@ -26,7 +26,8 @@ async function main() {
   const PROJECT_ID = core.getInput('project_id', { required: true });
   const STACK_NAME = core.getInput('stack_name', { required: true });
   const SERVICE_NAME = core.getInput('service_name', { required: true });
-  const DOCKER_IMAGE = core.getInput('docker_image', { required: true });
+  const DOCKER_IMAGE = core.getInput('docker_image', { required: true }).toLocaleLowerCase();
+  const SIDEKICK_DOCKER_IMAGE = core.getInput('sidekick_docker_image', { required: false }).toLocaleLowerCase();
  
   const rancherApi = request.defaults({
     baseUrl: `${RANCHER_URL}/v2-beta/projects/${PROJECT_ID}`,
@@ -52,6 +53,15 @@ async function main() {
   }
   const { id, launchConfig } = service.data[0];
   launchConfig.imageUuid = `docker:${DOCKER_IMAGE}`;
+  launchConfig.startFirst = true;
+
+  if (SIDEKICK_DOCKER_IMAGE) {
+    launchConfig.secondaryLaunchConfigs = [
+      {
+        imageUuid: `docker:${SIDEKICK_DOCKER_IMAGE}`
+      }
+    ];
+  }
 
   // Upgrade
   const body = {
