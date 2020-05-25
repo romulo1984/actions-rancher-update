@@ -55,10 +55,15 @@ async function main() {
   launchConfig.imageUuid = `docker:${DOCKER_IMAGE}`;
   launchConfig.startFirst = true;
 
+  console.log(JSON.stringify(launchConfig))
+
   if (SIDEKICK_DOCKER_IMAGE) {
-    launchConfig.secondaryLaunchConfigs[0] = {
-      imageUuid: `docker:${SIDEKICK_DOCKER_IMAGE}`
-    }
+    launchConfig.secondaryLaunchConfigs = [
+      {
+        ...launchConfig,
+        imageUuid: `docker:${SIDEKICK_DOCKER_IMAGE}`
+      }
+    ]
   }
 
   // Upgrade
