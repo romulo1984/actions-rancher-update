@@ -51,16 +51,12 @@ async function main() {
   if (!service || !service.data[0]) {
     throw new Error('Could not find service name. Check the service_name input. Deploy failed!');
   }
-  const { id, launchConfig } = service.data[0];
+  const { id, launchConfig, secondaryLaunchConfigs } = service.data[0];
   launchConfig.imageUuid = `docker:${DOCKER_IMAGE}`;
   launchConfig.startFirst = true;
 
-  const secondaryLaunchConfigs = null;
   if (SIDEKICK_DOCKER_IMAGE) {
-    secondaryLaunchConfigs = {
-      ...launchConfig,
-      imageUuid: `docker:${SIDEKICK_DOCKER_IMAGE}`
-    }
+    secondaryLaunchConfigs[0].imageUuid =`docker:${SIDEKICK_DOCKER_IMAGE}`
   }
 
   // Upgrade
